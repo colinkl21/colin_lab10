@@ -1,7 +1,7 @@
 ---
 title: "Lab 10 - Grading the professor, Pt. 2"
-author: "Insert your name here"
-date: "Insert date here"
+author: "Colin Li"
+date: "3/30/2023"
 output: github_document
 ---
 
@@ -13,15 +13,68 @@ library(tidymodels)
 library(openintro)
 ```
 
-### Exercise 1
+### Part 1
 
-Remove this text, and add your answer for Exercise 1 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+```{r}
 
-### Exercise 2
+m_bty <- lm(score~bty_avg, data = evals)
+summary(m_bty)
 
-...
 
-Add exercise headings as needed.
+```
+R2 = 0.03502, Adjusted R2 = 0.03293
+
+
+
+### Part 2
+
+```{r}
+
+m_bty_gen <- lm(score~bty_avg + gender, data = evals)
+summary(m_bty_gen)
+
+m_bty_rank <- lm(score~bty_avg + rank, data = evals)
+summary(m_bty_rank)
+
+
+```
+Intercept: 3.747 the predicted evaluation score for female professors when female professors' attractiveness score is 0. 
+the model explains 5.9% of variance in score. 
+The male line means predicted male professors' evaluation score while controlling for attractiveness. 
+when they receive the same beauty score, male professors have higher evaluation score. 
+It varies because gender is a moderator. 
+The adjusted R2 increased about 2%, this means gender explains an additional unique 2% of variance in score. 
+Adding gender to the model increased bty_avg estimate a little bit.
+The new model, intercept means the predicted evaluation score for teaching faculty when their attractiveness rating is 0. Slope bty means 1 unit increase in attractiveness rating is associated with .068 increase in evaluation score when controlling for professors' rank. Slope tenure track means if professors are tenured tracked, their predicted evaluation score is 3.98155-0.16070, when controlling for other ranks and attractiveness rating. Slope tenured means if professors are tenured, their predicted evaluation score is 3.98155-0.12623, when controlling for other ranks and attractiveness. 
+
+
+### Part 3
+
+```{r}
+
+m <- lm(score~rank + ethnicity + gender + language + age + cls_perc_eval + cls_did_eval + cls_students + cls_level + cls_profs + cls_credits + bty_avg, data = evals)
+
+summary(m)
+
+
+m2 <- lm(score~rank + ethnicity + gender + language + age + cls_perc_eval + cls_did_eval + cls_level + cls_profs + cls_credits + bty_avg, data = evals)
+
+summary(m2)
+
+mfinal <- lm(score~rank + ethnicity + gender + age + cls_perc_eval + cls_credits + bty_avg, data = evals)
+
+summary(mfinal)
+
+
+```
+I thought cls_credits (i.e., number of credits) wouldn't matter. It turns out I was wrong. 
+I decided not to include cls_students. 
+The final model's adjusted R2 is .1429, compared to the model that I included all potential predictors (.1403), it is higher. 
+
+Slope bty_avg means 1 unit increase in attractiveness rating is associated with a .064 increase in evaluation score, when controlling for rank, ethnicity, gender, age, course credit, and percent of students wbo completed evaluation.  
+Slope ethnicity means professors who are not ethnic minority are rated .22 higher in course evals than ethnic minority professors, when controlling for rank, attractiveness, gender, age, course credit, and percent of students wbo completed evaluation. 
+
+A high evaluation score is associated with ethnicity, gender, age, and attractiveness. 
+
+I won't generalize because I imagine the student demographics at UT Austin can be unique. E.g., if there are more White students there, their ratings may show such biases toward ethnic minority faculty, but this may not be the case for universities with a more diverse student body.  
+ 
